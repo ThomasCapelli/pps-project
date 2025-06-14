@@ -27,9 +27,16 @@ object Leaderboard {
       }
     }
 
-    override def toList: List[(String, Int)] = leaderboard.toList.sorted((a, b) => b._2 - a._2)
+    override def toList: List[(String, Int)] = leaderboard.toList.sortBy(-_._2)
 
-    override def merge(leaderboard: Leaderboard): Leaderboard = Leaderboard((this.toList ++ leaderboard.toList).sorted((a, b) => b._2 - a._2).take(numLongestFiles).to(TreeSet), numLongestFiles)
+    override def merge(leaderboard: Leaderboard): Leaderboard =
+      Leaderboard(
+        (this.toList ++ leaderboard.toList)
+          .sortWith((a, b) => a._2 > b._2)
+          .take(numLongestFiles)
+          .to(TreeSet),
+        numLongestFiles
+      )
 
     override def toString: String = {
       val builder = new StringBuilder()
